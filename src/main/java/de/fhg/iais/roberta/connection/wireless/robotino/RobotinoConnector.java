@@ -1,8 +1,11 @@
-package de.fhg.iais.roberta.connection.wireless.nao;
+package de.fhg.iais.roberta.connection.wireless.robotino;
 
+import de.fhg.iais.roberta.connection.AbstractConnector;
 import de.fhg.iais.roberta.connection.wireless.IWirelessConnector;
+import de.fhg.iais.roberta.connection.wireless.nao.Nao;
+import de.fhg.iais.roberta.util.OraTokenGenerator;
+import de.fhg.iais.roberta.util.Pair;
 import net.schmizz.sshj.userauth.UserAuthException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -10,32 +13,23 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import de.fhg.iais.roberta.connection.AbstractConnector;
-import de.fhg.iais.roberta.util.OraTokenGenerator;
-import de.fhg.iais.roberta.util.Pair;
-
 import static de.fhg.iais.roberta.connection.IConnector.State.ERROR_AUTH;
 import static de.fhg.iais.roberta.connection.IConnector.State.ERROR_UPLOAD_TO_ROBOT;
 
 /**
- * Connector class for NAO robots.
+ * Connector class for Robotino robots.
  * Handles state and communication between robot, connector and server.
  */
-public class NaoConnector extends AbstractConnector<Nao> implements IWirelessConnector<Nao> {
-    private static final Logger LOG = LoggerFactory.getLogger(NaoConnector.class);
+public class RobotinoConnector extends AbstractConnector<Robotino> implements IWirelessConnector<Robotino> {
+    private static final Logger LOG = LoggerFactory.getLogger(RobotinoConnector.class);
 
-    private final NaoCommunicator naoCommunicator;
+    private final RobotinoCommunicator robotinoCommunicator;
 
     private String password = "";
 
-    /**
-     * Constructor for tha NAO connector.
-     *
-     * @param nao the NAO that should be connected to
-     */
-    NaoConnector(Nao nao) {
-        super(nao);
-        this.naoCommunicator = new NaoCommunicator(nao);
+    RobotinoConnector(Robotino robotino) {
+        super(robotino);
+        this.robotinoCommunicator = new RobotinoCommunicator(robotino);
     }
 
     /**
@@ -83,7 +77,7 @@ public class NaoConnector extends AbstractConnector<Nao> implements IWirelessCon
         this.token = OraTokenGenerator.generateToken();
         this.fire(State.WAIT_FOR_SERVER);
 
-        JSONObject deviceInfo = this.naoCommunicator.getDeviceInfo();
+        JSONObject deviceInfo = this.robotinoCommunicator.getDeviceInfo();
         deviceInfo.put(KEY_TOKEN, this.token);
         deviceInfo.put(KEY_CMD, CMD_REGISTER);
         try {
@@ -110,7 +104,7 @@ public class NaoConnector extends AbstractConnector<Nao> implements IWirelessCon
     }
 
     private void waitForCmd() {
-        JSONObject deviceInfoWaitCMD = this.naoCommunicator.getDeviceInfo();
+        JSONObject deviceInfoWaitCMD = this.robotinoCommunicator.getDeviceInfo();
         deviceInfoWaitCMD.put(KEY_TOKEN, this.token);
         deviceInfoWaitCMD.put(KEY_CMD, CMD_PUSH);
 
@@ -136,22 +130,15 @@ public class NaoConnector extends AbstractConnector<Nao> implements IWirelessCon
 
     private void waitUpload() {
         try {
-            this.naoCommunicator.setPassword(this.password);
+            this.robotinoCommunicator.setPassword(this.password);
 
-            String firmware = this.naoCommunicator.checkFirmwareVersion();
-            if ( !firmware.isEmpty() ) {
-                if ( !this.serverCommunicator.verifyHalChecksum(firmware) ) {
-                    this.serverCommunicator.updateHalNAO(firmware);
-                }
-            }
-
-            JSONObject deviceInfo = this.naoCommunicator.getDeviceInfo();
+            JSONObject deviceInfo = this.robotinoCommunicator.getDeviceInfo();
             deviceInfo.put(KEY_TOKEN, this.token);
             deviceInfo.put(KEY_CMD, CMD_REGISTER); // TODO why is the command register
 
             Pair<byte[], String> program = this.serverCommunicator.downloadProgram(deviceInfo);
 
-            this.naoCommunicator.uploadFile(program.getFirst(), program.getSecond());
+            this.robotinoCommunicator.uploadFile(program.getFirst(), program.getSecond());
             this.fire(State.WAIT_EXECUTION);
         } catch ( UserAuthException e ) {
             LOG.error("Could not authorize user: {}", e.getMessage());
