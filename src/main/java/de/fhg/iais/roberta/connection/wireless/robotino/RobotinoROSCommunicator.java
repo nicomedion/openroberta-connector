@@ -14,14 +14,12 @@ import org.slf4j.LoggerFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Communicator class for the robotino robot. Handles network communication between the robotino and the connector.
  */
-public class RobotinoCommunicator implements IWirelessCommunicator {
-    private static final Logger LOG = LoggerFactory.getLogger(RobotinoCommunicator.class);
+public class RobotinoROSCommunicator implements IWirelessCommunicator {
+    private static final Logger LOG = LoggerFactory.getLogger(RobotinoROSCommunicator.class);
 
     private static final String USERNAME = "robotino";
 
@@ -33,7 +31,7 @@ public class RobotinoCommunicator implements IWirelessCommunicator {
     private final String workingDirectory;
     private String firmwareVersion = "";
 
-    public RobotinoCommunicator(Robotino robotino) {
+    public RobotinoROSCommunicator(Robotino robotino) {
         this.name = robotino.getName();
         this.address = robotino.getAddress();
 
@@ -81,7 +79,7 @@ public class RobotinoCommunicator implements IWirelessCommunicator {
     public JSONObject getDeviceInfo() {
         JSONObject deviceInfo = new JSONObject();
         deviceInfo.put("firmwarename", "Robotino");
-        deviceInfo.put("robot", "robotino");
+        deviceInfo.put("robot", "robotinoROS");
         deviceInfo.put("firmwareversion", this.firmwareVersion);
         deviceInfo.put("macaddr", "usb");
         deviceInfo.put("brickname", this.name);

@@ -2,7 +2,6 @@ package de.fhg.iais.roberta.connection.wireless.robotino;
 
 import de.fhg.iais.roberta.connection.AbstractConnector;
 import de.fhg.iais.roberta.connection.wireless.IWirelessConnector;
-import de.fhg.iais.roberta.connection.wireless.nao.Nao;
 import de.fhg.iais.roberta.util.OraTokenGenerator;
 import de.fhg.iais.roberta.util.Pair;
 import net.schmizz.sshj.userauth.UserAuthException;
@@ -23,13 +22,13 @@ import static de.fhg.iais.roberta.connection.IConnector.State.ERROR_UPLOAD_TO_RO
 public class RobotinoConnector extends AbstractConnector<Robotino> implements IWirelessConnector<Robotino> {
     private static final Logger LOG = LoggerFactory.getLogger(RobotinoConnector.class);
 
-    private final RobotinoCommunicator robotinoCommunicator;
+    private final RobotinoROSCommunicator robotinoROSCommunicator;
 
     private String password = "";
 
     RobotinoConnector(Robotino robotino) {
         super(robotino);
-        this.robotinoCommunicator = new RobotinoCommunicator(robotino);
+        this.robotinoROSCommunicator = new RobotinoROSCommunicator(robotino);
     }
 
     /**
@@ -77,7 +76,7 @@ public class RobotinoConnector extends AbstractConnector<Robotino> implements IW
         this.token = OraTokenGenerator.generateToken();
         this.fire(State.WAIT_FOR_SERVER);
 
-        JSONObject deviceInfo = this.robotinoCommunicator.getDeviceInfo();
+        JSONObject deviceInfo = this.robotinoROSCommunicator.getDeviceInfo();
         deviceInfo.put(KEY_TOKEN, this.token);
         deviceInfo.put(KEY_CMD, CMD_REGISTER);
         try {
@@ -104,7 +103,7 @@ public class RobotinoConnector extends AbstractConnector<Robotino> implements IW
     }
 
     private void waitForCmd() {
-        JSONObject deviceInfoWaitCMD = this.robotinoCommunicator.getDeviceInfo();
+        JSONObject deviceInfoWaitCMD = this.robotinoROSCommunicator.getDeviceInfo();
         deviceInfoWaitCMD.put(KEY_TOKEN, this.token);
         deviceInfoWaitCMD.put(KEY_CMD, CMD_PUSH);
 
@@ -130,15 +129,15 @@ public class RobotinoConnector extends AbstractConnector<Robotino> implements IW
 
     private void waitUpload() {
         try {
-            this.robotinoCommunicator.setPassword(this.password);
+            this.robotinoROSCommunicator.setPassword(this.password);
 
-            JSONObject deviceInfo = this.robotinoCommunicator.getDeviceInfo();
+            JSONObject deviceInfo = this.robotinoROSCommunicator.getDeviceInfo();
             deviceInfo.put(KEY_TOKEN, this.token);
             deviceInfo.put(KEY_CMD, CMD_REGISTER); // TODO why is the command register
 
             Pair<byte[], String> program = this.serverCommunicator.downloadProgram(deviceInfo);
 
-            this.robotinoCommunicator.uploadFile(program.getFirst(), program.getSecond());
+            this.robotinoROSCommunicator.uploadFile(program.getFirst(), program.getSecond());
             this.fire(State.WAIT_EXECUTION);
         } catch ( UserAuthException e ) {
             LOG.error("Could not authorize user: {}", e.getMessage());
