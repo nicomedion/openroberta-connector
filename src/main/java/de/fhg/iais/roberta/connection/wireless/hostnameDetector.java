@@ -22,7 +22,7 @@ public class hostnameDetector implements IDetector {
     private static final Map<String, Class<? extends AbstractWirelessRobot>> ROBOT_HOSTNAMES = new HashMap<>(1);
 
     static {
-        ROBOT_HOSTNAMES.put("octopi.local.", Robotino.class);
+        ROBOT_HOSTNAMES.put("robotino.local", Robotino.class);
     }
 
     @Override

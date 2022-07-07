@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Communicator class for the NAO robot. Handles network communication between the NAO and the connector.
+ * Communicator class for the robotino robot. Handles network communication between the robotino and the connector.
  */
 public class RobotinoCommunicator implements IWirelessCommunicator {
     private static final Logger LOG = LoggerFactory.getLogger(RobotinoCommunicator.class);
@@ -28,7 +28,7 @@ public class RobotinoCommunicator implements IWirelessCommunicator {
     private final String name;
     private final InetAddress address;
 
-    private String password = "";
+    private String password = "robotino";
 
     private final String workingDirectory;
     private String firmwareVersion = "";
@@ -53,18 +53,18 @@ public class RobotinoCommunicator implements IWirelessCommunicator {
      * @throws IOException if something with the ssh connection or file transfer went wrong
      */
     public void uploadFile(byte[] binaryFile, String fileName) throws UserAuthException, IOException {
-        //TODO CHANGE FOR ROBOTINO
-        try (SshConnection ssh = new SshConnection(this.address, "pi", this.password)) {
-            ssh.command("rm -rf /home/tests/" + "/robertaRosNode");
-            ssh.command("mkdir -p /home/tests/" + "/robertaRosNode");
-            ssh.copyLocalToRemote(binaryFile, "/home/tests/", fileName);
-
+        if (password.equals("")){
+            password = "robotino";
+        }
+        try (SshConnection ssh = new SshConnection(this.address, USERNAME, this.password)) {
+            ssh.copyLocalToRemote(binaryFile, "/home/robotino/robertaPrograms", fileName);
+            LOG.info("starting roslaunch...");
+            ssh.command("workspacePath=$(/home/robotino/robertaPrograms/getWorkspace.sh); source /opt/ros/noetic/setup.bash; source  $workspacePath ;sh /home/robotino/robertaPrograms/launchRobertaScript.sh " +fileName);
         } catch ( FileNotFoundException | TransportException | ConnectionException e ) {
             throw new IOException(e);
         }
     }
-
-    /**
+        /**
      * Sets the password for SSH communication with the Robotino.
      *
      * @param password the password
