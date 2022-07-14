@@ -150,7 +150,6 @@ public class NaoConnector extends AbstractConnector<Nao> implements IWirelessCon
             deviceInfo.put(KEY_CMD, CMD_REGISTER); // TODO why is the command register
 
             Pair<byte[], String> program = this.serverCommunicator.downloadProgram(deviceInfo);
-
             this.naoCommunicator.uploadFile(program.getFirst(), program.getSecond());
             this.fire(State.WAIT_EXECUTION);
         } catch ( UserAuthException e ) {
