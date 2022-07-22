@@ -15,9 +15,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class hostnameDetector implements IDetector {
+public class HostnameDetector implements IDetector {
 
-    private static final Logger LOG = LoggerFactory.getLogger(hostnameDetector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HostnameDetector.class);
 
     private static final Map<String, Class<? extends AbstractWirelessRobot>> ROBOT_HOSTNAMES = new HashMap<>(1);
 

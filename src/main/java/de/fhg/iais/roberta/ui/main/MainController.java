@@ -178,7 +178,7 @@ public class MainController implements IController, IOraListenable<IRobot> {
                 break;
             case WAIT_UPLOAD:
                 if ( this.connector.getRobot() instanceof IWirelessRobot ) {
-                    String password = this.mainView.getNaoPassword();
+                    String password = this.mainView.getRobotPassword();
                     ((IWirelessConnector<IRobot>) this.connector).setPassword(password);
                 }
                 break;

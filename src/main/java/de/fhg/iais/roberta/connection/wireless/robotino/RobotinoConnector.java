@@ -148,9 +148,6 @@ public class RobotinoConnector extends AbstractConnector<Robotino> implements IW
         }
     }
 
-    /**
-     * Resets the token and brickName to empty strings. TODO necessary?
-     */
     private void resetLastConnectionData() {
         LOG.info("resetting");
         this.token = "";

@@ -51,15 +51,17 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
      * @throws IOException if something with the ssh connection or file transfer went wrong
      */
     public void uploadFile(byte[] binaryFile, String fileName) throws UserAuthException, IOException {
-        if (password.equals("")){
+        if (password.isEmpty()){
             password = "robotino";
         }
         try (SshConnection ssh = new SshConnection(this.address, USERNAME, this.password)) {
             ssh.copyLocalToRemote(binaryFile, "/home/robotino/robertaPrograms", fileName);
             LOG.info("starting roslaunch...");
             //execute launch script and immediately move on
-            ssh.command("workspacePath=$(/home/robotino/robertaPrograms/getWorkspace.sh); source /opt/ros/noetic/setup.bash; source  $workspacePath" +
-                    " ;sh /home/robotino/robertaPrograms/launchRobertaScript.sh " + fileName + "&> /dev/null & disown $!");
+
+            ssh.command("workspacePath=$(/home/robotino/robertaPrograms/getWorkspace.sh);" +
+                    " source /opt/ros/noetic/setup.bash; source  $workspacePath" +
+                   " ;bash /home/robotino/robertaPrograms/launchRobertaScript.sh " + fileName + "&> /dev/null & disown $!");
         } catch ( FileNotFoundException | TransportException | ConnectionException e ) {
             throw new IOException(e);
         }
