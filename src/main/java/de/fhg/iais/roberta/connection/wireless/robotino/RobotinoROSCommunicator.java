@@ -44,7 +44,7 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
         if (password.isEmpty()){
             password = "robotino";
         }
-        try (SshConnection ssh = new SshConnection(this.address, USERNAME, this.password)) {
+        try (SshConnection ssh = new SshConnection(this.address, USERNAME , this.password)) {
             //kill last running python Program
             ssh.command("pkill -1 -f " + fileName);
             ssh.copyLocalToRemote(binaryFile, "/home/robotino/robertaPrograms", fileName);
