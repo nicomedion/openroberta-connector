@@ -51,10 +51,7 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
 
             LOG.info("starting roslaunch...");
             //execute launch script and immediately move on
-
-            ssh.command("workspacePath=$(/home/robotino/robertaPrograms/getWorkspace.sh);" +
-                    " source /opt/ros/noetic/setup.bash; source  $workspacePath" +
-                    " ;bash /home/robotino/robertaPrograms/launchRobertaScript.sh " + fileName + "&> /dev/null & disown $!");
+            ssh.command("bash /home/robotino/robertaPrograms/launchRobertaScript.bash " + fileName + "&> /dev/null & disown $!");
         } catch ( FileNotFoundException | TransportException | ConnectionException e ) {
             throw new IOException(e);
         }
