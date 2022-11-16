@@ -19,14 +19,14 @@ import static de.fhg.iais.roberta.connection.IConnector.State.ERROR_UPLOAD_TO_RO
 public class RobotinoConnector extends AbstractWirelessConnector<Robotino> implements IWirelessConnector<Robotino> {
     private static final Logger LOG = LoggerFactory.getLogger(RobotinoConnector.class);
     RobotinoConnector(Robotino robotino) {
-        super(robotino, new RobotinoROSCommunicator(robotino));
+        super(robotino, new RobotinoViewCommunicator(robotino));
     }
     @Override
     protected void waitUpload() {
         try {
             this.communicator.setPassword(this.password);
             Pair<byte[], String> program = getProgram();
-            this.communicator.uploadFile(program.getFirst(), "robertaRosProgram.py");
+            this.communicator.uploadFile(program.getFirst(), "NEPOprog.py");
             this.fire(State.WAIT_EXECUTION);
         } catch ( UserAuthException e ) {
             LOG.error("Could not authorize user: {}", e.getMessage());

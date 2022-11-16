@@ -16,8 +16,8 @@ import java.net.InetAddress;
 /**
  * Communicator class for the robotino robot. Handles network communication between the robotino and the connector.
  */
-public class RobotinoROSCommunicator implements IWirelessCommunicator {
-    private static final Logger LOG = LoggerFactory.getLogger(RobotinoROSCommunicator.class);
+public class RobotinoViewCommunicator implements IWirelessCommunicator {
+    private static final Logger LOG = LoggerFactory.getLogger(RobotinoViewCommunicator.class);
 
     private static final String USERNAME = "robotino";
 
@@ -28,7 +28,7 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
 
     private String firmwareVersion = "1.0";
 
-    public RobotinoROSCommunicator(Robotino robotino) {
+    public RobotinoViewCommunicator(Robotino robotino) {
         this.name = robotino.getName();
         this.address = robotino.getAddress();
     }
@@ -45,13 +45,13 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
             password = "robotino";
         }
         try (SshConnection ssh = new SshConnection(this.address, USERNAME , this.password)) {
-            //kill last running python Program
-            ssh.command("pkill -1 -f " + fileName);
-            ssh.copyLocalToRemote(binaryFile, "/home/robotino/robertaPrograms", fileName);
 
-            LOG.info("starting roslaunch...");
+            ssh.copyLocalToRemote(binaryFile, "/home/robotino/openRoberta", "NEPOprog.py");
+
+            LOG.info("starting view program...");
             //execute launch script and immediately move on
-            ssh.command("bash /home/robotino/robertaPrograms/launchRobertaScript.bash " + fileName + "&> /dev/null & disown $!");
+            ssh.command("pkill view");
+            ssh.command("/opt/robview4/bin/robview4_interpreter -f /home/robotino/openRoberta/NEPOview.rvwx"  + "&> /dev/null & disown $!");
         } catch ( FileNotFoundException | TransportException | ConnectionException e ) {
             throw new IOException(e);
         }
@@ -73,7 +73,7 @@ public class RobotinoROSCommunicator implements IWirelessCommunicator {
     public JSONObject getDeviceInfo() {
         JSONObject deviceInfo = new JSONObject();
         deviceInfo.put("firmwarename", "Robotino");
-        deviceInfo.put("robot", "robotinoROS");
+        deviceInfo.put("robot", "robotino");
         deviceInfo.put("firmwareversion", this.firmwareVersion);
         deviceInfo.put("macaddr", "usb");
         deviceInfo.put("brickname", this.name);
