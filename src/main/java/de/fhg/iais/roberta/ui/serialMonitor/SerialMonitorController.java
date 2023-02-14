@@ -80,7 +80,7 @@ public class SerialMonitorController implements IController {
         this.stopSerialLogging();
 
         this.serialLoggingFuture =
-            this.executorService.submit(new SerialLoggingTask(this::appendSerial, this.portName, this.serialMonitorView.getSerialRate()));
+            this.executorService.submit(new SerialLoggingTask(this::appendSerial, this.robot, this.portName, this.serialMonitorView.getSerialRate()));
     }
 
     private void appendSerial(byte[] readBuffer) {

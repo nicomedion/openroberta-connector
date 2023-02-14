@@ -36,4 +36,8 @@ public final class RobotPropertyHelper {
     public String getBaudRate(String robot){
         return this.properties.getProperty(robot + ".serial.baudrate");
     }
+
+    public Boolean keepPortOpen(String robot) {
+        return this.properties.getProperty((robot+".keepPortOpen")) != null;
+    }
 }
