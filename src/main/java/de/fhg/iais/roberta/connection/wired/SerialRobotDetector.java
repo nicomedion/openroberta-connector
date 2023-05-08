@@ -1,5 +1,6 @@
 package de.fhg.iais.roberta.connection.wired;
 
+import de.fhg.iais.roberta.connection.wired.karl.Karl;
 import de.fhg.iais.roberta.connection.wired.mBot2.Mbot2;
 import de.fhg.iais.roberta.connection.wired.spike.Spike;
 import static de.fhg.iais.roberta.util.WiredRobotIdFileHelper.load;
@@ -83,6 +84,10 @@ public class SerialRobotDetector implements IDetector {
                         break;
                     case SPIKE:
                         detectedRobots.add(new Spike(wiredRobotType, device.port));
+                        break;
+                    case KARL:
+                        System.out.println("KARL was detected!!!");
+                        detectedRobots.add(new Karl(device.port));
                         break;
                     case EV3:
                     case NONE:

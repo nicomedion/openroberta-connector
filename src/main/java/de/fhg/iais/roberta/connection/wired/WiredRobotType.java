@@ -16,6 +16,7 @@ public enum WiredRobotType {
     NANO33BLE("nano33ble", "Arduino Nano 33 BLE", true),
     ROB3RTA ("rob3rta", "ROB3RTA", true),
     SPIKE("spike", "Spike", true),
+    KARL("karl", "Karl", true),
     NONE ("none", "none", false);
 
     private final String text;

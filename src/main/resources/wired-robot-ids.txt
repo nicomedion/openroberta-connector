@@ -34,6 +34,7 @@
 1a86,7523,mbot2
 0694,0009,spike
 0694,0010,spike
+2E8A,0005,karl
 
 # nano33ble: 005A for flashing, 805A for serial communication
 2341,005A,nano33ble
