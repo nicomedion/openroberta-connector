@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +16,13 @@ public class KarlCommunicator {
     private static final Logger LOG = LoggerFactory.getLogger(KarlCommunicator.class);
 
     boolean uploadFile(String portName, String filePath) {
+        if(!SystemUtils.IS_OS_LINUX){
+            return false;
+        }
+
         //requires ampy to be installed
         //TODO find ampy version to bundle with OpenRoberta-Connector
-        //TODO how to provide the karl lib?
+        //TODO how to provide the karl lib? Preinstall on every karl?
         ArgsAdder argsRun = new ArgsAdder();
         argsRun.add("ampy", "-p", "/dev/"+portName, "run", filePath);
         ArgsAdder argsPut = new ArgsAdder();
