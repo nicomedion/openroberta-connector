@@ -7,13 +7,27 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.fhg.iais.roberta.connection.wired.IWiredRobot;
 import de.fhg.iais.roberta.util.Pair;
 
 public class KarlCommunicator {
     private static final Logger LOG = LoggerFactory.getLogger(KarlCommunicator.class);
+    private final IWiredRobot robot;
+    KarlCommunicator(IWiredRobot robot){
+        this.robot = robot;
+    }
+    public JSONObject getDeviceInfo() {
+        JSONObject deviceInfo = new JSONObject();
+
+        deviceInfo.put("firmwarename", this.robot.getType().toString());
+        deviceInfo.put("robot", this.robot.getType().toString());
+        deviceInfo.put("brickname", this.robot.getType().getPrettyText());
+        return deviceInfo;
+    }
 
     boolean uploadFile(String portName, String filePath) {
         if(!SystemUtils.IS_OS_LINUX){
