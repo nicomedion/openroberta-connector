@@ -34,6 +34,8 @@ public class KarlCommunicator {
             return false;
         }
 
+        //portName = (SystemUtils.IS_OS_WINDOWS ? "" : "/dev/") + portName; // to hide the parameter, which should not be used
+
         //requires ampy to be installed
         //TODO find ampy version to bundle with OpenRoberta-Connector
         //TODO how to provide the karl lib? Preinstall on every karl?

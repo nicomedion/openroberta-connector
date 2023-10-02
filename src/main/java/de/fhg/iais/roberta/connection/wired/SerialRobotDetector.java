@@ -86,7 +86,6 @@ public class SerialRobotDetector implements IDetector {
                         detectedRobots.add(new Spike(wiredRobotType, device.port));
                         break;
                     case KARL:
-                        System.out.println("KARL was detected!!!");
                         detectedRobots.add(new Karl(device.port));
                         break;
                     case EV3:

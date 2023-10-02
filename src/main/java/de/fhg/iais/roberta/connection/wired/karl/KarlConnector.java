@@ -63,7 +63,6 @@ public class KarlConnector extends AbstractConnector<Karl> {
             case WAIT_FOR_CMD:
                 try {
                     this.brickData = this.karlCommunicator.getDeviceInfo();//new JSONObject();
-                    //this.brickData.put("karl", true);
                     this.brickData.put(KEY_TOKEN, this.token);
                     this.brickData.put(KEY_CMD, CMD_PUSH);
 
@@ -88,15 +87,19 @@ public class KarlConnector extends AbstractConnector<Karl> {
                                     os.write(program.getFirst());
                                 }
 
-                                this.fire(State.WAIT_UPLOAD);
+                                //this.fire(State.WAIT_UPLOAD);
                                 boolean result = this.karlCommunicator.uploadFile(this.robot.getPort(), temp.getAbsolutePath());
                                 if (!result) {
                                     this.fire(State.ERROR_UPLOAD_TO_ROBOT);
-                                    this.fire(State.WAIT_FOR_CMD);
+                                    //this.fire(State.WAIT_FOR_CMD);
                                 }
+
+                                this.fire(State.WAIT_FOR_CMD);
 
                             } catch ( Exception e ){
                                 e.printStackTrace();
+                                this.fire(State.ERROR_UPLOAD_TO_ROBOT);
+                                this.fire(State.WAIT_FOR_CMD);
                             }
                             break;
                         case CMD_CONFIGURATION:
